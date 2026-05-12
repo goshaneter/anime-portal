@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>AnimePortal</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+ 
+    body {
+      min-height: 100vh;
+      background:
+        linear-gradient(rgba(8, 8, 18, 0.92), rgba(8, 8, 18, 0.97)),
+        url("https://images.unsplash.com/photo-1578632767115-351597cf2477") center/cover fixed;
+      color: white;
+    }
+ 
+    header {
+      padding: 30px 20px;
+      text-align: center;
+      background: rgba(15, 15, 30, 0.9);
+      box-shadow: 0 0 35px rgba(255, 0, 150, 0.35);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+ 
+    header h1 {
+      font-size: 42px;
+      background: linear-gradient(90deg, #ff2e93, #8a5cff, #00d4ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 15px;
+    }
+ 
+    nav a {
+      color: #ddd;
+      margin: 0 12px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+ 
+    nav a:hover {
+      color: #ff2e93;
+    }
+ 
+    .hero {
+      text-align: center;
+      padding: 55px 20px 30px;
+    }
+ 
+    .hero h2 {
+      font-size: 38px;
+      margin-bottom: 10px;
+    }
+ 
+    .hero p {
+      color: #bbb;
+      font-size: 18px;
+    }
+ 
+    .promo-box {
+      width: 92%;
+      margin: 20px auto;
+      padding: 18px;
+      border-radius: 18px;
+      background: linear-gradient(90deg, rgba(255,46,147,0.25), rgba(0,212,255,0.2));
+      border: 1px solid rgba(255,255,255,0.15);
+      text-align: center;
+    }
+ 
+    .promo-box input {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      width: 220px;
+      outline: none;
+    }
+ 
+    button {
+      padding: 12px 18px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #ff2e93, #8a5cff);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+ 
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(255,46,147,0.7);
+    }
+ 
+    .container {
+      width: 92%;
+      margin: 30px auto;
+    }
+ 
+    .section-title {
+      font-size: 28px;
+      margin-bottom: 20px;
+      border-left: 6px solid #ff2e93;
+      padding-left: 15px;
+    }
+ 
+    .filters {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 25px;
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.06);
+    }
+ 
+    .filters select,
+    .filters input {
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      background: #1c1c2b;
+      color: white;
+      outline: none;
+    }
+ 
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 25px;
+    }
+ 
+    .card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      background: #191927;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      cursor: pointer;
+      transition: 0.35s;
+    }
+ 
+    .card:hover {
+      transform: translateY(-10px) scale(1.03);
+      box-shadow: 0 0 35px rgba(255,46,147,0.6);
+    }
+ 
+    .card img {
+      width: 100%;
+      height: 285px;
+      object-fit: cover;
+      transition: 0.35s;
+    }
+ 
+    .card:hover img {
+      filter: brightness(55%);
+      transform: scale(1.08);
+    }
+ 
+    .card-content {
+      padding: 15px;
+    }
+ 
+    .card h3 {
+      font-size: 17px;
+      margin-bottom: 8px;
+    }
+ 
+    .card p {
+      color: #aaa;
+      font-size: 14px;
+    }
+ 
+    .rating,
+    .age {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+ 
+    .rating {
+      background: linear-gradient(90deg, #ff2e93, #8a5cff);
+    }
+ 
+    .age {
+      background: rgba(255,255,255,0.12);
+      margin-left: 5px;
+    }
+ 
+    .badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      padding: 6px 11px;
+      border-radius: 20px;
+      background: rgba(255,46,147,0.95);
+      font-size: 12px;
+      font-weight: bold;
+      z-index: 2;
+    }
+ 
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 100;
+      padding: 30px;
+      overflow-y: auto;
+    }
+ 
+    .modal-content {
+      max-width: 1000px;
+      margin: auto;
+      background: #151522;
+      border-radius: 25px;
+      padding: 25px;
+      box-shadow: 0 0 40px rgba(255,46,147,0.45);
+      position: relative;
+    }
+ 
+    .close {
+      position: absolute;
+      right: 25px;
+      top: 18px;
+      font-size: 34px;
+      cursor: pointer;
+      color: #ff2e93;
+    }
+ 
+    .modal-grid {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 25px;
+    }
+ 
+    .modal-grid img {
+      width: 100%;
+      border-radius: 18px;
+    }
+ 
+    .info h2 {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+ 
+    .info p {
+      color: #ccc;
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+ 
+    .watch-panel {
+      display: none;
+      margin-top: 25px;
+      padding: 20px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.07);
+    }
+ 
+    .watch-panel select {
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      margin: 8px;
+      width: 180px;
+    }
+ 
+    .player {
+      margin-top: 18px;
+      height: 260px;
+      border-radius: 18px;
+      background:
+        linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
+        url("https://images.unsplash.com/photo-1607604276583-eef5d076aa5f") center/cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 52px;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+ 
+    .stars {
+      margin: 15px 0;
+      font-size: 28px;
+      cursor: pointer;
+    }
+ 
+    .stars span:hover {
+      color: #ffcc00;
+    }
+ 
+    .comments {
+      margin-top: 25px;
+    }
+ 
+    .comments input {
+      width: 75%;
+      padding: 13px;
+      border-radius: 12px;
+      border: none;
+      outline: none;
+      margin-top: 10px;
+    }
+ 
+    .comment {
+      background: rgba(255,255,255,0.08);
+      padding: 12px;
+      border-radius: 12px;
+      margin-top: 10px;
+    }
+ 
+    footer {
+      margin-top: 60px;
+      padding: 25px;
+      text-align: center;
+      background: rgba(15,15,25,0.95);
+      color: #aaa;
+    }
+ 
+    @media (max-width: 750px) {
+      .modal-grid {
+        grid-template-columns: 1fr;
+      }
+ 
+      .comments input {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+ 
+<header>
+  <h1>AnimePortal</h1>
+  <nav>
+    <a href="#">Главная</a>
+    <a href="#">Жанры</a>
+    <a href="#">Онгоинги</a>
+    <a href="#">Топ</a>
+    <a href="#">Промокоды</a>
+  </nav>
+</header>
+ 
+<section class="hero">
+  <h2>Смотри аниме онлайн</h2>
+  <p>Первый сезон бесплатно. Открывай карточку, выбирай сезон, серию или фильм.</p>
+</section>
+ 
+<div class="promo-box">
+  <h3>🎁 Введи промокод</h3>
+  <p>Промокод <b>ANIME2026</b> открывает премиум-доступ</p>
+  <input id="promoInput" placeholder="Введите промокод">
+  <button onclick="checkPromo()">Активировать</button>
+  <p id="promoResult"></p>
+</div>
+ 
+<main class="container">
+  <h2 class="section-title">Популярное аниме</h2>
+ 
+  <div class="filters">
+    <select id="ageFilter" onchange="applyFilters()">
+      <option value="all">Все возрастные ограничения</option>
+      <option value="12+">12+</option>
+      <option value="16+">16+</option>
+      <option value="18+">18+</option>
+    </select>
+ 
+    <select id="sortFilter" onchange="applyFilters()">
+      <option value="default">Обычная сортировка</option>
+      <option value="ratingHigh">Сначала высокий рейтинг</option>
+      <option value="ratingLow">Сначала низкий рейтинг</option>
+    </select>
+ 
+    <input id="searchInput" oninput="applyFilters()" placeholder="Поиск по названию">
+  </div>
+ 
+  <div class="cards" id="cards"></div>
+</main>
+ 
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">×</span>
+ 
+    <div class="modal-grid">
+      <img id="modalImg">
+ 
+      <div class="info">
+        <h2 id="modalTitle"></h2>
+        <p id="modalDesc"></p>
+        <p><b>Жанр:</b> <span id="modalGenre"></span></p>
+        <p><b>Возраст:</b> <span id="modalAge"></span></p>
+        <p><b>Рейтинг:</b> <span id="modalRating"></span></p>
+        <p><b>Доступ:</b> первый сезон бесплатно, остальные по подписке или промокоду.</p>
+ 
+        <button onclick="showWatchPanel()">▶ Смотреть</button>
+ 
+        <div class="stars">
+          <p>Поставь оценку:</p>
+          <span onclick="rate(1)">★</span>
+          <span onclick="rate(2)">★</span>
+          <span onclick="rate(3)">★</span>
+          <span onclick="rate(4)">★</span>
+          <span onclick="rate(5)">★</span>
+          <p id="userRating"></p>
+        </div>
+      </div>
+    </div>
+ 
+    <div class="watch-panel" id="watchPanel">
+      <h3>Выбор просмотра</h3>
+ 
+      <select id="seasonSelect">
+        <option>1 сезон — бесплатно</option>
+        <option>2 сезон — премиум</option>
+        <option>3 сезон — премиум</option>
+        <option>Фильм — премиум</option>
+      </select>
+ 
+      <select id="episodeSelect">
+        <option>1 серия</option>
+        <option>2 серия</option>
+        <option>3 серия</option>
+        <option>4 серия</option>
+        <option>5 серия</option>
+        <option>6 серия</option>
+        <option>7 серия</option>
+        <option>8 серия</option>
+        <option>9 серия</option>
+        <option>10 серия</option>
+        <option>11 серия</option>
+        <option>12 серия</option>
+      </select>
+ 
+      <button onclick="playAnime()">Запустить</button>
+ 
+      <div class="player" id="player">▶</div>
+      <p id="playText"></p>
+    </div>
+ 
+    <div class="comments">
+      <h3>Комментарии</h3>
+      <input id="commentInput" placeholder="Напиши комментарий">
+      <button onclick="addComment()">Отправить</button>
+ 
+      <div id="commentList">
+        <div class="comment">🔥 Очень крутое аниме!</div>
+        <div class="comment">Жду новый сезон!</div>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+<footer>
+  © 2026 AnimePortal. Все права защищены.
+</footer>
+ 
+<script>
+  let premium = false;
+  let currentAnime = null;
+ 
+  const animeList = [
+    {
+      title: "Клинок рассекающий демонов",
+      desc: "История Танджиро, который становится охотником на демонов, чтобы спасти свою сестру.",
+      genre: "Экшен, фэнтези, драма",
+      age: "16+",
+      rating: 9.1,
+      badge: "NEW",
+      img: "1.jpg"
+    },
+    {
+      title: "Spy x Family",
+      desc: "Шпион, убийца и телепат создают необычную семью ради секретной миссии.",
+      genre: "Комедия, шпионы, повседневность",
+      age: "12+",
+      rating: 8.7,
+      badge: "ХИТ",
+      img: "2.jpg"
+    },
+    {
+      title: "Адский рай",
+      desc: "Опасный остров, ниндзя и поиск эликсира бессмертия.",
+      genre: "Экшен, приключения, тёмное фэнтези",
+      age: "18+",
+      rating: 8.4,
+      badge: "NEW",
+      img: "3.jpg"
+    },
+    {
+      title: "Наруто",
+      desc: "Мальчик-ниндзя мечтает стать Хокаге и получить признание деревни.",
+      genre: "Приключения, боевые искусства",
+      age: "12+",
+      rating: 9.0,
+      badge: "ТОП",
+      img: "5.gif"
+    },
+    {
+      title: "Магическая битва",
+      desc: "Мир проклятий, магов и невероятных сражений.",
+      genre: "Экшен, мистика, сверхъестественное",
+      age: "16+",
+      rating: 8.9,
+      badge: "ХИТ",
+      img: "6.gif"
+    },
+    {
+      title: "Атака титанов",
+      desc: "Человечество сражается за выживание против огромных титанов.",
+      genre: "Драма, экшен, постапокалипсис",
+      age: "18+",
+      rating: 9.5,
+      badge: "ТОП",
+      img: "7.gif"
+    },
+    {
+      title: "Ван Пис",
+      desc: "Луффи и его команда ищут легендарное сокровище.",
+      genre: "Приключения, комедия, экшен",
+      age: "12+",
+      rating: 9.3,
+      badge: "ТОП",
+      img: "LUFFY.jpg"
+    },
+    {
+      title: "Тетрадь смерти",
+      desc: "Школьник получает тетрадь, способную убивать людей.",
+      genre: "Детектив, триллер, мистика",
+      age: "16+",
+      rating: 9.4,
+      badge: "ЛЕГЕНДА",
+      img: "dt.jpg"
+    },
+    {
+      title: "Человек-бензопила",
+      desc: "Дэндзи становится охотником на демонов с силой бензопилы.",
+      genre: "Экшен, ужасы, тёмное фэнтези",
+      age: "18+",
+      rating: 8.8,
+      badge: "18+",
+      img: "https://i.pinimg.com/736x/1e/f4/c5/1ef4c502e4fd4e452af31438c87c88dd.jpg"
+    },
+    {
+      title: "Моя геройская академия",
+      desc: "Мир, где почти у каждого есть суперспособность.",
+      genre: "Супергерои, школа, экшен",
+      age: "12+",
+      rating: 8.5,
+      badge: "ХИТ",
+      img: "https://i.pinimg.com/736x/48/3d/33/483d336c732c7dc754a9abf9a71eaeaa.jpg"
+    }
+  ];
+ 
+  const cards = document.getElementById("cards");
+ 
+  function renderCards(list) {
+    cards.innerHTML = "";
+ 
+    if (list.length === 0) {
+      cards.innerHTML = "<p>Ничего не найдено 😢</p>";
+      return;
+    }
+ 
+    list.forEach((anime) => {
+      const realIndex = animeList.indexOf(anime);
+ 
+      cards.innerHTML += `
+        <div class="card" onclick="openModal(${realIndex})">
+          <span class="badge">${anime.badge}</span>
+          <img src="${anime.img}">
+          <div class="card-content">
+            <h3>${anime.title}</h3>
+            <p>${anime.desc}</p>
+            <span class="rating">⭐ ${anime.rating}</span>
+            <span class="age">${anime.age}</span>
+          </div>
+        </div>
+      `;
+    });
+  }
+ 
+  function applyFilters() {
+    const age = document.getElementById("ageFilter").value;
+    const sort = document.getElementById("sortFilter").value;
+    const search = document.getElementById("searchInput").value.toLowerCase();
+ 
+    let result = animeList.filter(anime => {
+      const ageOk = age === "all" || anime.age === age;
+      const searchOk = anime.title.toLowerCase().includes(search);
+      return ageOk && searchOk;
+    });
+ 
+    if (sort === "ratingHigh") {
+      result.sort((a, b) => b.rating - a.rating);
+    }
+ 
+    if (sort === "ratingLow") {
+      result.sort((a, b) => a.rating - b.rating);
+    }
+ 
+    renderCards(result);
+  }
+ 
+  function openModal(index) {
+    currentAnime = animeList[index];
+ 
+    document.getElementById("modalImg").src = currentAnime.img;
+    document.getElementById("modalTitle").innerText = currentAnime.title;
+    document.getElementById("modalDesc").innerText = currentAnime.desc;
+    document.getElementById("modalGenre").innerText = currentAnime.genre;
+    document.getElementById("modalAge").innerText = currentAnime.age;
+    document.getElementById("modalRating").innerText = "⭐ " + currentAnime.rating;
+ 
+    document.getElementById("watchPanel").style.display = "none";
+    document.getElementById("userRating").innerText = "";
+    document.getElementById("playText").innerText = "";
+    document.getElementById("player").innerText = "▶";
+ 
+    document.getElementById("modal").style.display = "block";
+  }
+ 
+  function closeModal() {
+    document.getElementById("modal").style.display = "none";
+  }
+ 
+  function showWatchPanel() {
+    document.getElementById("watchPanel").style.display = "block";
+  }
+ 
+  function playAnime() {
+    const season = document.getElementById("seasonSelect").value;
+    const episode = document.getElementById("episodeSelect").value;
+ 
+    if (season.includes("премиум") && !premium) {
+      document.getElementById("playText").innerText =
+        "🔒 Этот раздел доступен по премиуму. Введи промокод ANIME2026.";
+      document.getElementById("player").innerText = "🔒";
+      return;
+    }
+ 
+    document.getElementById("player").innerText = "▶";
+    document.getElementById("playText").innerText =
+      "Сейчас воспроизводится: " + currentAnime.title + " — " + season + ", " + episode;
+  }
+ 
+  function rate(stars) {
+    document.getElementById("userRating").innerText =
+      "Спасибо! Твоя оценка: " + stars + " из 5 ⭐";
+  }
+ 
+  function addComment() {
+    const input = document.getElementById("commentInput");
+    const text = input.value.trim();
+ 
+    if (text === "") {
+      alert("Сначала напиши комментарий");
+      return;
+    }
+ 
+    document.getElementById("commentList").innerHTML += `
+      <div class="comment">${text}</div>
+    `;
+ 
+    input.value = "";
+  }
+ 
+  function checkPromo() {
+    const promo = document.getElementById("promoInput").value.trim();
+    const result = document.getElementById("promoResult");
+ 
+    if (promo === "ANIME2026") {
+      premium = true;
+      result.innerText = "✅ Промокод активирован! Премиум открыт.";
+      result.style.color = "#00ff99";
+    } else {
+      result.innerText = "❌ Неверный промокод.";
+      result.style.color = "#ff5c5c";
+    }
+  }
+ 
+  renderCards(animeList);
+</script>
+ 
+</body>
+</html>
